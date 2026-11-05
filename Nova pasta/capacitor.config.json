@@ -1,0 +1,13 @@
+{
+  "appId": "com.nebulavanguard.game",
+  "appName": "Nebula Vanguard",
+  "webDir": "www",
+  "backgroundColor": "#05030f",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#05030f"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

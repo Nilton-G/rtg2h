@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#05030f" />
+<meta name="description" content="Nebula Vanguard — shooter espacial infinito com skins, baús e evolução permanente." />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link rel="stylesheet" href="styles.css" />
+<title>Nebula Vanguard</title>
+</head>
+<body>
+<div id="app">
+
+  <canvas id="game" aria-label="Área do jogo"></canvas>
+
+  <!-- ================= HUD ================= -->
+  <div id="hud" class="hud is-hidden" aria-hidden="true">
+    <div class="hud-top">
+      <button class="icon-btn" data-action="pause" aria-label="Pausar">❚❚</button>
+      <div class="hud-wave">
+        <span class="lbl">ONDA</span><b id="hud-wave">1</b>
+        <em id="hud-sector">SETOR 1</em>
+      </div>
+      <div class="hud-score">
+        <b id="hud-score">0</b><span class="lbl">PONTOS</span>
+      </div>
+    </div>
+
+    <div class="hud-combo is-hidden" id="hud-combo">
+      <b id="hud-combo-x">x1</b><span>COMBO</span>
+      <i id="hud-combo-bar"></i>
+    </div>
+
+    <div class="hud-bottom">
+      <div class="hud-status">
+        <div class="shields" id="hud-shields"></div>
+        <div class="powers" id="hud-powers"></div>
+      </div>
+      <button class="nova-btn" data-action="nova" id="nova-btn" aria-label="Bomba Nova">
+        <span class="ring"></span>
+        <span class="core">◉</span>
+        <small id="nova-count">1</small>
+      </button>
+    </div>
+
+    <div class="hint" id="hint">Arraste para mover · A nave atira sozinha</div>
+  </div>
+
+  <!-- ================= UI / TELAS ================= -->
+  <div id="ui">
+
+    <!-- MENU -->
+    <section class="screen" id="scr-menu">
+      <div class="menu-bg"></div>
+      <header class="brand">
+        <div class="brand-kicker">FROTA DE ASSALTO · SETOR 7</div>
+        <h1>NEBULA<span>VANGUARD</span></h1>
+        <p class="tagline">Sobreviva. Evolua. Domine o infinito.</p>
+      </header>
+
+      <div class="menu-wallet" data-wallet></div>
+
+      <div class="menu-main">
+        <button class="btn-play" data-action="play">
+          <span class="glow"></span>
+          <b>JOGAR</b>
+          <small id="menu-best">Melhor: onda 1</small>
+        </button>
+
+        <div class="menu-grid">
+          <button class="tile" data-screen="hangar"><span class="ti">🛸</span><b>HANGAR</b><small id="tile-skins">1 skin</small></button>
+          <button class="tile" data-screen="upgrades"><span class="ti">⚙️</span><b>UPGRADES</b><small id="tile-upg">Nível 0</small></button>
+          <button class="tile" data-screen="shop"><span class="ti">💎</span><b>LOJA</b><small>Ofertas</small></button>
+          <button class="tile" data-screen="missions"><span class="ti">🎯</span><b>MISSÕES</b><small id="tile-missions">0/3</small></button>
+          <button class="tile" data-screen="crates"><span class="ti">🎁</span><b>BAÚS</b><small>Skins raras</small></button>
+          <button class="tile" data-screen="settings"><span class="ti">⚡</span><b>AJUSTES</b><small id="tile-daily">Bônus diário</small></button>
+        </div>
+      </div>
+
+      <div class="pilot">
+        <div class="pilot-head"><span>NÍVEL DE PILOTO <b id="menu-level">1</b></span><span id="menu-xp">0 / 100</span></div>
+        <div class="bar"><i id="menu-xpbar" style="width:0%"></i></div>
+      </div>
+    </section>
+
+    <!-- HANGAR -->
+    <section class="screen" id="scr-hangar">
+      <div class="screen-head">
+        <button class="back" data-back>‹</button>
+        <h2>HANGAR</h2>
+        <div class="wallet-mini" data-wallet></div>
+      </div>
+      <div class="screen-body scroll" id="hangar-body"></div>
+    </section>
+
+    <!-- UPGRADES -->
+    <section class="screen" id="scr-upgrades">
+      <div class="screen-head">
+        <button class="back" data-back>‹</button>
+        <h2>MELHORIAS</h2>
+        <div class="wallet-mini" data-wallet></div>
+      </div>
+      <div class="screen-body scroll">
+        <p class="screen-note">Melhorias são permanentes e valem para todas as partidas.</p>
+        <div class="list" id="upgrades-body"></div>
+      </div>
+    </section>
+
+    <!-- LOJA -->
+    <section class="screen" id="scr-shop">
+      <div class="screen-head">
+        <button class="back" data-back>‹</button>
+        <h2>LOJA</h2>
+        <div class="wallet-mini" data-wallet></div>
+      </div>
+      <div class="screen-body scroll" id="shop-body"></div>
+    </section>
+
+    <!-- MISSÕES -->
+    <section class="screen" id="scr-missions">
+      <div class="screen-head">
+        <button class="back" data-back>‹</button>
+        <h2>MISSÕES</h2>
+        <div class="wallet-mini" data-wallet></div>
+      </div>
+      <div class="screen-body scroll">
+        <div class="daily-card" id="daily-card"></div>
+        <h3 class="sect-title">DIÁRIAS</h3>
+        <div class="list" id="missions-body"></div>
+        <h3 class="sect-title">CONQUISTAS</h3>
+        <div class="list" id="achievements-body"></div>
+      </div>
+    </section>
+
+    <!-- BAÚS -->
+    <section class="screen" id="scr-crates">
+      <div class="screen-head">
+        <button class="back" data-back>‹</button>
+        <h2>BAÚS</h2>
+        <div class="wallet-mini" data-wallet></div>
+      </div>
+      <div class="screen-body scroll" id="crates-body"></div>
+    </section>
+
+    <!-- AJUSTES -->
+    <section class="screen" id="scr-settings">
+      <div class="screen-head">
+        <button class="back" data-back>‹</button>
+        <h2>AJUSTES</h2>
+        <div class="wallet-mini" data-wallet></div>
+      </div>
+      <div class="screen-body scroll">
+        <div class="list" id="settings-body"></div>
+        <div class="stats-card" id="stats-card"></div>
+        <button class="btn danger full" id="btn-reset">Apagar progresso</button>
+        <p class="screen-note center">Nebula Vanguard v1.0 · Feito para jogar offline</p>
+      </div>
+    </section>
+
+    <!-- GAME OVER -->
+    <section class="screen overlay" id="scr-gameover">
+      <div class="go-card">
+        <div class="go-head">
+          <span class="go-kicker">NAVE DESTRUÍDA</span>
+          <h2>FIM DA MISSÃO</h2>
+        </div>
+        <div class="go-results" id="go-results"></div>
+        <div class="go-revive" id="go-revive">
+          <button class="btn-revive" data-action="revive">
+            <b>REVIVER</b>
+            <small><span class="cry">✦</span> <span id="revive-cost">30</span> cristais</small>
+          </button>
+          <p>Volta na hora, com escudo total e onda atual.</p>
+        </div>
+        <button class="btn primary full" data-action="restart">JOGAR DE NOVO</button>
+        <button class="btn ghost full" data-action="menu">Voltar ao hangar</button>
+      </div>
+    </section>
+
+    <!-- PAUSA -->
+    <section class="screen overlay" id="scr-pause">
+      <div class="go-card small">
+        <h2 class="center">PAUSADO</h2>
+        <div class="pause-stats" id="pause-stats"></div>
+        <button class="btn primary full" data-action="resume">CONTINUAR</button>
+        <button class="btn ghost full" data-action="quit">ABANDONAR MISSÃO</button>
+        <button class="btn ghost full" data-action="toggle-sfx" id="btn-sfx-pause">Som: ligado</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- TOAST + MODAL -->
+  <div id="toast" class="toast"></div>
+  <div id="modal" class="modal is-hidden">
+    <div class="modal-card" id="modal-card"></div>
+  </div>
+
+  <!-- FX DE ONDA -->
+  <div id="wave-flash" class="wave-flash"></div>
+</div>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
